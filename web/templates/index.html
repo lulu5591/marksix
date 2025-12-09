@@ -1,0 +1,31 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mark Six</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Mark Six</h1>
+    <nav>
+      <a href="/history">History</a>
+      <a href="/predict">Predict</a>
+      <a href="/insights">Insights</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>How to Use</h2>
+      <ul>
+        <li>History: Browse past draws, search by draw number or date, jump to a page, and click "Update Records" to fetch new draws.</li>
+        <li>Predict: Check a candidate set for duplicates and generate a brand-new non-duplicate combination.</li>
+        <li>Smart Suggest: Use pattern-based generation with recent-trend weighting (3 even, 3 odd; max consecutive run ≤ 2).</li>
+        <li>Insights: View patterns that never occur and rarity stats (parity distribution, consecutive runs, decade and last-digit checks).</li>
+      </ul>
+      <p>All data is stored locally in <code>data/mark_six.sqlite</code>. Re-run updates anytime.</p>
+    </section>
+  </main>
+</body>
+</html>
+

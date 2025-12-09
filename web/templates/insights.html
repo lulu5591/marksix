@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Insights</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Insights</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/history">History</a>
+      <a href="/predict">Predict</a>
+    </nav>
+  </header>
+  <main>
+    <section class="card">
+      <div>Total draws: {{ total }}</div>
+      <div>Distinct combinations: {{ distinct }}</div>
+    </section>
+    <section>
+      <h2>Patterns That Never Occur</h2>
+      <ul>
+        {% for p in never_patterns %}
+        <li>{{ p }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+    <section>
+      <h2>Rare Patterns</h2>
+      <ul>
+        {% for p in rare_patterns %}
+        <li>{{ p }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+    <section class="card">
+      <h2>Parity (even counts in a draw)</h2>
+      <div>0 even: {{ parity_counts[0] }}</div>
+      <div>1 even: {{ parity_counts[1] }}</div>
+      <div>2 even: {{ parity_counts[2] }}</div>
+      <div>3 even: {{ parity_counts[3] }}</div>
+      <div>4 even: {{ parity_counts[4] }}</div>
+      <div>5 even: {{ parity_counts[5] }}</div>
+      <div>6 even: {{ parity_counts[6] }}</div>
+    </section>
+    <section class="card">
+      <h2>Longest Consecutive Run</h2>
+      <div>Run=1: {{ run_counts[1] }}</div>
+      <div>Run=2: {{ run_counts[2] }}</div>
+      <div>Run=3: {{ run_counts[3] }}</div>
+      <div>Run=4: {{ run_counts[4] }}</div>
+      <div>Run=5: {{ run_counts[5] }}</div>
+      <div>Run=6: {{ run_counts[6] }}</div>
+    </section>
+    <section class="card">
+      <h2>Same Decade / Last Digit</h2>
+      <div>All six in same decade: {{ same_decade_all }}</div>
+      <div>All six same last digit: {{ last_digit_all }}</div>
+    </section>
+  </main>
+</body>
+</html>
+

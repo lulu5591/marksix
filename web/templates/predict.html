@@ -1,0 +1,86 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Predict</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header>
+    <h1>Predict</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/history">History</a>
+    </nav>
+  </header>
+  <main>
+    <section>
+      <h2>Check Combination</h2>
+      <form method="post" class="card">
+        <input type="hidden" name="action" value="check">
+        <label>Numbers (six between 1–49, separated by comma or space)</label>
+        <input type="text" name="numbers" placeholder="e.g. 1, 2, 3, 4, 5, 6">
+        <button type="submit">Check</button>
+      </form>
+      {% if candidate %}
+      <div class="result">
+        <div>Candidate: {{ candidate|join(', ') }}</div>
+        <div>Status: {% if exists %}<span class="bad">duplicate</span>{% else %}<span class="good">new</span>{% endif %}</div>
+      </div>
+      {% endif %}
+    </section>
+    <section>
+      <h2>Suggest Non-Duplicate</h2>
+      <form method="post" class="card">
+        <input type="hidden" name="action" value="suggest">
+        <button type="submit">Generate</button>
+      </form>
+      {% if suggestion %}
+      <div class="result">
+        <div>Suggestion: {{ suggestion|join(', ') }}</div>
+      </div>
+      {% endif %}
+    </section>
+    <section>
+      <h2>Smart Suggest (pattern-based)</h2>
+      <form method="post" class="card">
+        <input type="hidden" name="action" value="smart">
+        <label>Trend window (recent draws)</label>
+        <input type="number" name="window" value="200" min="20" max="2000">
+        <button type="submit">Smart Generate</button>
+      </form>
+      {% if smart %}
+      <div class="result">
+        <div>Smart Suggestion: {{ smart|join(', ') }}</div>
+        <div>Pattern: 3 even / 3 odd, max consecutive run ≤ 2</div>
+      </div>
+      {% endif %}
+    </section>
+    <section>
+      <h2>Recent Trends (Top 15)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Number</th>
+            <th>Count</th>
+            <th>Last Seen</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for n, c, d in trend %}
+          <tr>
+            <td>{{ n }}</td>
+            <td>{{ c }}</td>
+            <td>{{ d if d else '-' }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+    {% if message %}
+    <div class="message">{{ message }}</div>
+    {% endif %}
+  </main>
+</body>
+</html>
+

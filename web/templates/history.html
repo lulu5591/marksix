@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Mark Six History</title>
+  <link rel="stylesheet" href="/static/styles.css">
+</head>
+<body>
+  <header>
+    <h1>History</h1>
+    <nav>
+      <a href="/">Home</a>
+      <a href="/predict">Predict</a>
+    </nav>
+  </header>
+  <main>
+    <form method="get" class="toolbar">
+      <input type="text" name="q" value="{{ q }}" placeholder="Search by draw number or date">
+      <button type="submit">Search</button>
+    </form>
+    <form method="get" class="toolbar">
+      <label>Go to page</label>
+      <input type="number" name="page" value="{{ page }}" min="1" max="{{ total_pages }}">
+      <input type="hidden" name="q" value="{{ q }}">
+      <button type="submit">Go</button>
+    </form>
+    <form method="post" action="/update" class="toolbar">
+      <button type="submit">Update Records</button>
+    </form>
+    {% if msg %}
+    <div class="message">{{ msg }}</div>
+    {% endif %}
+    <table>
+      <thead>
+        <tr>
+          <th>Draw</th>
+          <th>Date</th>
+          <th>Numbers</th>
+          <th>Extra</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for d in rows %}
+        <tr>
+          <td>{{ d[0] }}</td>
+          <td>{{ d[1] }}</td>
+          <td>{{ d[2] }}, {{ d[3] }}, {{ d[4] }}, {{ d[5] }}, {{ d[6] }}, {{ d[7] }}</td>
+          <td>{{ d[8] }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <div class="pagination">
+      {% if page > 1 %}
+        <a href="?page={{ page-1 }}&q={{ q }}">Prev</a>
+      {% endif %}
+      <span>Page {{ page }} / {{ total_pages }}</span>
+      {% if page < total_pages %}
+        <a href="?page={{ page+1 }}&q={{ q }}">Next</a>
+      {% endif %}
+    </div>
+  </main>
+</body>
+</html>
+
