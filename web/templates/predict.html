@@ -7,13 +7,19 @@
 </head>
 <body>
   <header>
-    <h1>Predict</h1>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/history">History</a>
-    </nav>
+    <div class="container">
+      <h1>Mark Six</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/predict">Predict</a>
+        <a href="/insights">Insights</a>
+      </nav>
+    </div>
   </header>
   <main>
+    <h1 class="page-title">Predict</h1>
+    <p class="lead">Check duplicates, generate new combinations, or use Smart & Config Suggest with presets or custom constraints. Results appear in place without page jumps.</p>
     <section>
       <h2>Check Combination</h2>
       <form method="post" class="card">
@@ -24,40 +30,85 @@
       </form>
       {% if candidate %}
       <div class="result">
-        <div>Candidate: {{ candidate|join(', ') }}</div>
+        <div class="balls">
+          {% for n in candidate %}
+          <span class="ball ball-{{ ball_color(n) }}">{{ n }}</span>
+          {% endfor %}
+        </div>
         <div>Status: {% if exists %}<span class="bad">duplicate</span>{% else %}<span class="good">new</span>{% endif %}</div>
       </div>
       {% endif %}
     </section>
     <section>
       <h2>Suggest Non-Duplicate</h2>
-      <form method="post" class="card">
+      <form id="suggestForm" method="post" class="card">
         <input type="hidden" name="action" value="suggest">
-        <button type="submit">Generate</button>
+        <button id="suggestBtn" type="submit">Generate</button>
       </form>
       {% if suggestion %}
       <div class="result">
-        <div>Suggestion: {{ suggestion|join(', ') }}</div>
+        <div class="balls">
+          {% for n in suggestion %}
+          <span class="ball ball-{{ ball_color(n) }}">{{ n }}</span>
+          {% endfor %}
+        </div>
       </div>
       {% endif %}
+      <div id="suggestResult" class="result" hidden></div>
     </section>
     <section>
-      <h2>Smart Suggest (pattern-based)</h2>
-      <form method="post" class="card">
-        <input type="hidden" name="action" value="smart">
-        <label>Trend window (recent draws)</label>
-        <input type="number" name="window" value="200" min="20" max="2000">
-        <button type="submit">Smart Generate</button>
+      <h2>Smart & Config Suggest</h2>
+      <form id="smartForm" method="post" class="card">
+        <input type="hidden" name="action" value="smart_unified">
+        <div class="grid-2">
+          <div class="box">
+            <h3>Preset</h3>
+            <label>
+              <select name="preset">
+                <option value="default">Default</option>
+                <option value="conservative">Conservative</option>
+                <option value="exploratory">Exploratory</option>
+                <option value="custom">Custom</option>
+              </select>
+            </label>
+            <label>Trend window</label>
+            <input type="number" name="window" value="200" min="20" max="2000">
+          </div>
+          <div class="box">
+            <h3>Parity</h3>
+            <label>Even count (Custom)</label>
+            <input type="number" name="even_count" value="3" min="0" max="6">
+            <div class="hint">Ignored unless preset is Custom</div>
+          </div>
+          <div class="box">
+            <h3>Constraints</h3>
+            <label>Max consecutive run (Custom)</label>
+            <input type="number" name="max_run" value="2" min="1" max="6">
+            <label>Top slice size (Custom)</label>
+            <input type="number" name="top_k" value="15" min="0" max="49">
+          </div>
+          <div class="box">
+            <h3>Advanced</h3>
+            <label>Exclude recent draws (Custom)</label>
+            <input type="number" name="cooldown" value="0" min="0" max="200">
+            <label><input type="checkbox" name="weighted"> Weighted by frequency (Custom)</label>
+          </div>
+        </div>
+        <button id="smartBtn" type="submit" class="btn btn-primary">Generate</button>
       </form>
       {% if smart %}
       <div class="result">
-        <div>Smart Suggestion: {{ smart|join(', ') }}</div>
-        <div>Pattern: 3 even / 3 odd, max consecutive run ≤ 2</div>
+        <div>Smart Suggestion{% if smart_label %} ({{ smart_label }}){% endif %}</div>
+        <div class="balls">
+          {% for n in smart %}
+          <span class="ball ball-{{ ball_color(n) }}">{{ n }}</span>
+          {% endfor %}
+        </div>
       </div>
       {% endif %}
+      <div id="smartResult" class="result" hidden></div>
     </section>
     <section>
-      <h2>Recent Trends (Top 15)</h2>
       <table>
         <thead>
           <tr>
@@ -77,10 +128,12 @@
         </tbody>
       </table>
     </section>
+    <!-- Manual section merged into Smart & Config Suggest -->
     {% if message %}
     <div class="message">{{ message }}</div>
     {% endif %}
   </main>
+  <script src="/static/predict.js"></script>
 </body>
 </html>
 

@@ -7,25 +7,35 @@
 </head>
 <body>
   <header>
-    <h1>History</h1>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/predict">Predict</a>
-    </nav>
+    <div class="container">
+      <h1>Mark Six</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/predict">Predict</a>
+        <a href="/insights">Insights</a>
+      </nav>
+    </div>
   </header>
   <main>
+    <h1 class="page-title">History</h1>
+    <p class="lead">Browse past draws. Search by draw number or date, jump to a page, and update records in-page. Numbers use official red/blue/green ball colors.</p>
+    <div class="card" style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+      <div>Latest: {{ latest if latest else '-' }} · Total: {{ total_now }}</div>
+      <div class="toolbar" style="margin:0">
+        <button id="updateBtn" class="btn btn-primary" data-url="/update.json">Update Records</button>
+        <span id="updateStatus" class="message"></span>
+      </div>
+    </div>
     <form method="get" class="toolbar">
       <input type="text" name="q" value="{{ q }}" placeholder="Search by draw number or date">
-      <button type="submit">Search</button>
+      <button type="submit" class="btn btn-primary">Search</button>
     </form>
     <form method="get" class="toolbar">
       <label>Go to page</label>
       <input type="number" name="page" value="{{ page }}" min="1" max="{{ total_pages }}">
       <input type="hidden" name="q" value="{{ q }}">
-      <button type="submit">Go</button>
-    </form>
-    <form method="post" action="/update" class="toolbar">
-      <button type="submit">Update Records</button>
+      <button type="submit" class="btn">Go</button>
     </form>
     {% if msg %}
     <div class="message">{{ msg }}</div>
@@ -44,22 +54,27 @@
         <tr>
           <td>{{ d[0] }}</td>
           <td>{{ d[1] }}</td>
-          <td>{{ d[2] }}, {{ d[3] }}, {{ d[4] }}, {{ d[5] }}, {{ d[6] }}, {{ d[7] }}</td>
-          <td>{{ d[8] }}</td>
+          <td class="nums">
+            <span class="ball ball-{{ ball_color(d[2]) }}">{{ d[2] }}</span>
+            <span class="ball ball-{{ ball_color(d[3]) }}">{{ d[3] }}</span>
+            <span class="ball ball-{{ ball_color(d[4]) }}">{{ d[4] }}</span>
+            <span class="ball ball-{{ ball_color(d[5]) }}">{{ d[5] }}</span>
+            <span class="ball ball-{{ ball_color(d[6]) }}">{{ d[6] }}</span>
+            <span class="ball ball-{{ ball_color(d[7]) }}">{{ d[7] }}</span>
+          </td>
+          <td><span class="ball ball-{{ ball_color(d[8]) }}">{{ d[8] }}</span></td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
     <div class="pagination">
-      {% if page > 1 %}
-        <a href="?page={{ page-1 }}&q={{ q }}">Prev</a>
-      {% endif %}
-      <span>Page {{ page }} / {{ total_pages }}</span>
-      {% if page < total_pages %}
-        <a href="?page={{ page+1 }}&q={{ q }}">Next</a>
-      {% endif %}
+      <a class="btn {% if page <= 1 %}disabled{% endif %}" href="{% if page > 1 %}?page={{ page-1 }}&q={{ q }}{% else %}#{% endif %}" aria-disabled="{{ 1 if page <= 1 else 0 }}" tabindex="{{ -1 if page <= 1 else 0 }}">Prev</a>
+      <span class="page-indicator">Page {{ page }} / {{ total_pages }}</span>
+      <a class="btn {% if page >= total_pages %}disabled{% endif %}" href="{% if page < total_pages %}?page={{ page+1 }}&q={{ q }}{% else %}#{% endif %}" aria-disabled="{{ 1 if page >= total_pages else 0 }}" tabindex="{{ -1 if page >= total_pages else 0 }}">Next</a>
     </div>
+    <div id="toast" class="toast" hidden></div>
   </main>
+  <script src="/static/app.js"></script>
 </body>
 </html>
 

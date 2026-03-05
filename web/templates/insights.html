@@ -4,36 +4,56 @@
   <meta charset="utf-8">
   <title>Insights</title>
   <link rel="stylesheet" href="/static/styles.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
   <header>
-    <h1>Insights</h1>
-    <nav>
-      <a href="/">Home</a>
-      <a href="/history">History</a>
-      <a href="/predict">Predict</a>
-    </nav>
+    <div class="container">
+      <h1>Mark Six</h1>
+      <nav>
+        <a href="/">Home</a>
+        <a href="/history">History</a>
+        <a href="/predict">Predict</a>
+        <a href="/insights">Insights</a>
+      </nav>
+    </div>
   </header>
   <main>
+    <h1 class="page-title">Insights</h1>
+    <p class="lead">Explore trends and rarity. Select a number for yearly trends and co‑occurrence. View color distribution totals and by year. See math impossibilities and observed vs expected rarity.</p>
     <section class="card">
       <div>Total draws: {{ total }}</div>
       <div>Distinct combinations: {{ distinct }}</div>
     </section>
     <section>
-      <h2>Patterns That Never Occur</h2>
+      <h2>Math Impossibilities</h2>
       <ul>
-        {% for p in never_patterns %}
+        {% for p in math_impossible %}
         <li>{{ p }}</li>
         {% endfor %}
       </ul>
     </section>
     <section>
-      <h2>Rare Patterns</h2>
-      <ul>
-        {% for p in rare_patterns %}
-        <li>{{ p }}</li>
-        {% endfor %}
-      </ul>
+      <h2>Rarity Estimates (Observed vs Expected)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>Observed</th>
+            <th>Expected (approx)</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for r in rarity_estimates %}
+          <tr>
+            <td>{{ r.pattern }}</td>
+            <td>{{ r.observed }}</td>
+            <td>{{ '%.2f'|format(r.expected) }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <div class="message">Expected counts computed from combinatorics; deviations are normal for small sample sizes.</div>
     </section>
     <section class="card">
       <h2>Parity (even counts in a draw)</h2>
@@ -59,7 +79,32 @@
       <div>All six in same decade: {{ same_decade_all }}</div>
       <div>All six same last digit: {{ last_digit_all }}</div>
     </section>
+    <section class="card card-wide">
+      <h2>Number Trend by Year</h2>
+      <div class="num-grid" id="numGrid">
+        {% for i in range(1,50) %}
+        <button class="pill" data-n="{{ i }}">{{ i }}</button>
+        {% endfor %}
+      </div>
+      <canvas id="trendChart" height="120"></canvas>
+      <h3 style="margin-top:12px">Top Co-occurring Numbers</h3>
+      <canvas id="coChart" height="120"></canvas>
+    </section>
+    <section class="card card-wide">
+      <h2>Color Analysis</h2>
+      <div class="charts-2">
+        <div>
+          <h3>Total Counts (Main Numbers)</h3>
+          <canvas id="colorPie" height="140"></canvas>
+        </div>
+        <div>
+          <h3>By Year (Stacked)</h3>
+          <canvas id="colorByYear" height="140"></canvas>
+        </div>
+      </div>
+    </section>
   </main>
+  <script src="/static/insights.js"></script>
 </body>
 </html>
 
